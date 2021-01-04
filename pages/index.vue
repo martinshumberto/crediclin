@@ -37,6 +37,17 @@
         </b>
       </card>
     </div>
+    <div class="columns is-mobile">
+      <!-- <div class="column is-6">
+        <ChartBar />
+      </div>
+      <div class="column is-6">
+        <ChartDoughnut />
+      </div> -->
+      <div class="column is-12">
+        <ChartLine />
+      </div>
+    </div>
   </section>
 </template>
 
@@ -46,3 +57,14 @@ export default {
   name: 'HomePage'
 }
 </script>
+
+<style lang="scss" scoped>
+.grid {
+  display: grid;
+  gap: 2rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+</style>

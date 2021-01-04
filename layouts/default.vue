@@ -95,7 +95,10 @@
         <span>Versão: 1.0</span>
       </div>
       <div class="column is-10">
-        <span>Todos os direitos reservados © CrediClin - Desenvolvido por: <a>Consilio</a></span>
+        <span>
+          Todos os direitos reservados © CrediClin - Desenvolvido por:
+          <a href="https://consilio.com.br" target="_new">Consilio</a>
+        </span>
       </div>
     </footer>
   </div>
