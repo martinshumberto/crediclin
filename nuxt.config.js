@@ -1,10 +1,15 @@
 export default {
-  // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
-  ssr: false,
+  ssr: true,
+
+  /*
+  ** Nuxt target
+  ** See https://nuxtjs.org/api/configuration-target
+  */
+  target: 'server',
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    title: 'crediclin',
+    title: 'Crediclin',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -34,16 +39,20 @@ export default {
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
-    // https://go.nuxtjs.dev/buefy
     'nuxt-buefy',
-    // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa'
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {},
+
+  /*
+  ** Server Middleware
+  */
+  serverMiddleware: {
+    '/api': '~/api'
+  },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
