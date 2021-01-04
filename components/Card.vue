@@ -8,17 +8,15 @@
       </header>
       <div class="card-content">
         <div class="content has-text-centered">
-          <b-icon
-            :icon="icon"
-            size="is-large"
-            type="is-primary"
-          />
+          <span class="is-size-4">
+            <slot />
+          </span>
         </div>
       </div>
       <footer class="card-footer">
         <div class="card-footer-item">
-          <span>
-            <slot />
+          <span class="is-size-7">
+            {{ footer }}
           </span>
         </div>
       </footer>
@@ -33,7 +31,7 @@ export default {
       type: String,
       required: true
     },
-    icon: {
+    footer: {
       type: String,
       required: true
     }

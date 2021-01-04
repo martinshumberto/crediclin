@@ -1,15 +1,15 @@
-export default {
-  ssr: true,
+require('dotenv').config()
 
-  /*
-  ** Nuxt target
-  ** See https://nuxtjs.org/api/configuration-target
-  */
+export default {
+  // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
+  ssr: false,
+
+  // Nuxt target (https://nuxtjs.org/api/configuration-target)
   target: 'server',
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    title: 'Crediclin',
+    title: 'CrediClin',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -22,6 +22,7 @@ export default {
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [
+    '@/assets/css/main.scss'
   ],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
@@ -41,7 +42,8 @@ export default {
   modules: [
     'nuxt-buefy',
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    '@nuxtjs/dotenv'
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)

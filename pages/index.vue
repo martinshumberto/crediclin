@@ -2,52 +2,47 @@
   <section class="section">
     <div class="columns is-mobile">
       <card
-        title="Free"
-        icon="github"
-      >
-        Open source on <a href="https://github.com/buefy/buefy">
-          GitHub
-        </a>
-      </card>
-
-      <card
-        title="Responsive"
-        icon="cellphone-link"
+        title="Total de clientes"
+        footer="Todo o período desde o início"
       >
         <b class="has-text-grey">
-          Every
-        </b> component is responsive
+          280
+        </b>
       </card>
 
       <card
-        title="Modern"
-        icon="alert-decagram"
+        title="Total de cobranças"
+        footer="Todo o período desde o início"
       >
-        Built with <a href="https://vuejs.org/">
-          Vue.js
-        </a> and <a href="http://bulma.io/">
-          Bulma
-        </a>
+        <b class="has-text-grey">
+          350
+        </b>
       </card>
 
       <card
-        title="Lightweight"
-        icon="arrange-bring-to-front"
+        title="Taxa de administração"
+        footer="Taxa dos financiamentos"
       >
-        No other internal dependency
+        <b class="has-text-grey">
+          10%
+        </b>
+      </card>
+
+      <card
+        title="Vencimento próx. fatura"
+        footer="Assinatura do plano mensal"
+      >
+        <b class="has-text-grey">
+          10/02/2021
+        </b>
       </card>
     </div>
   </section>
 </template>
 
 <script>
-import Card from '~/components/Card'
 
 export default {
-  name: 'HomePage',
-
-  components: {
-    Card
-  }
+  name: 'HomePage'
 }
 </script>
