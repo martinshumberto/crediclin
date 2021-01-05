@@ -349,18 +349,38 @@ footer {
     & .notifications {
       display: flex;
       align-items: center;
+      & .navbar-link {
+        &:hover {
+          & ~ .navbar-dropdown {
+            display: block;
+            position: absolute;
+            background-color: #1498ea;
+            top: 58px;
+          }
+        }
+      }
       & .navbar-dropdown {
         display: none;
       }
     }
     & .profile {
+      display: flex;
+      flex-direction: column;
       height: 100%;
       & .navbar-link {
         display: flex;
         align-items: center;
         flex: 1;
         width: 100%;
-        height: 100%;
+        &:hover {
+          & ~ .navbar-dropdown {
+            display: block;
+            position: absolute;
+            background-color: #1498ea;
+            top: 58px;
+            padding: 0;
+          }
+        }
       }
       & .navbar-dropdown {
         display: none;
