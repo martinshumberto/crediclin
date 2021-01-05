@@ -1,9 +1,11 @@
 import Sequelize from 'sequelize'
 import databaseConfig from '../config/database'
+import Customer from '../models/Customer'
 import User from '../models/User'
 
 const models = [
-  User
+  User,
+  Customer
 ]
 
 class Database {
