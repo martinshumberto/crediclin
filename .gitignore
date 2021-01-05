@@ -92,3 +92,6 @@ sw.*
 # Lock file
 *-lock.json
 *.lock
+
+# Docker
+docker

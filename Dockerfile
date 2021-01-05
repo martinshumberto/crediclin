@@ -2,11 +2,11 @@ FROM node:alpine
 
 WORKDIR /usr/app
 COPY package*.json ./
-RUN npm install --silent --progress=false
+RUN yarn --silent --progress=false
 USER root
 COPY . .
 
-RUN npm run build
+RUN yarn build
 
 RUN chown -R node:node ./*
 
@@ -17,6 +17,7 @@ RUN apk update && apk add tzdata &&\
 
 USER node
 
+ENV HOST 0.0.0.0
 EXPOSE 3000
 
-CMD ["node", "node_modules/.bin/nuxt-start"]
+CMD ["yarn", "start"]

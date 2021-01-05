@@ -10,6 +10,7 @@ class App {
 
     this.middlewares()
     this.router()
+    this.listen()
   }
 
   middlewares () {
@@ -21,6 +22,18 @@ class App {
   router () {
     this.server.use(routes)
   }
+
+  listen () {
+    if (require.main === module) {
+      const port = process.env.PORT || 3001
+      this.server.listen(port, () => {
+        console.log(`API server listening on port ${port}`)
+      })
+    }
+  }
 }
 
-module.exports = new App().server
+export default {
+  path: '/api',
+  handler: new App().server
+}

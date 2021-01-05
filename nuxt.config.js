@@ -1,3 +1,4 @@
+import * as path from 'path'
 require('dotenv').config()
 
 export default {
@@ -56,7 +57,15 @@ export default {
     '/api': '~/api'
   },
 
+  server: {
+    port: process.env.PORT, // default: 3000
+    host: '0.0.0.0', // default: localhost,
+    timing: false
+  },
+
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
-  }
+  },
+
+  srcDir: path.resolve(__dirname)
 }
