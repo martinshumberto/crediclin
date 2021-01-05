@@ -4,19 +4,20 @@ import User from '../models/User'
 class UserController {
   async store (req, res) {
     const schema = Yup.object().shape({
-      name: Yup.string().required(),
+      firstname: Yup.string().required(),
+      lastname: Yup.string().required(),
       email: Yup.string().email().required(),
       password: Yup.string().required().min(6)
     })
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(401).json({ error: 'Validation fails' })
+      return res.status(401).json({ error: 'Algo deu errado na validação.' })
     }
 
     const userExists = await User.findOne({ where: { email: req.body.email } })
 
     if (userExists) {
-      return res.status(400).json({ error: 'User already exists.' })
+      return res.status(400).json({ error: 'O usuário já existe.' })
     }
 
     // const user = await User.create(req.body)
@@ -40,9 +41,9 @@ class UserController {
   }
 
   async update (req, res) {
-    // Validando os dados com o yup
     const schema = Yup.object().shape({
-      name: Yup.string(),
+      firstname: Yup.string(),
+      lastname: Yup.string(),
       email: Yup.string().email(),
       oldPassword: Yup.string().min(6),
 
@@ -57,7 +58,7 @@ class UserController {
     })
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(401).json({ error: 'Validation fails' })
+      return res.status(401).json({ error: 'Algo deu errado na validação.' })
     }
 
     const { email, oldPassword } = req.body
@@ -67,16 +68,16 @@ class UserController {
       const userExists = await User.findOne({ where: { email } })
 
       if (userExists) {
-        return res.status(400).json({ error: 'User already exists.' })
+        return res.status(400).json({ error: 'O usuário já existe.' })
       }
     }
 
     if (oldPassword && !(await user.checkPassword(oldPassword))) {
-      return res.status(401).json({ error: 'Password does not match' })
+      return res.status(401).json({ error: 'Senha não corresponde.' })
     }
-    const { id, name, role } = await user.update(req.body)
+    const { id, firstname, lastname, role } = await user.update(req.body)
 
-    return res.status(200).json({ id, name, email, role })
+    return res.status(200).json({ id, firstname, lastname, email, role })
   }
 
   async delete (req, res) {
