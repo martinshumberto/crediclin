@@ -44,7 +44,7 @@ module.exports = {
         allowNull: true
       },
       rg_organ_emitter: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
         allowNull: true
       },
       birth: {
