@@ -50,13 +50,51 @@
           </div>
 
           <div class="navbar-end">
-            <a class="navbar-item">
+            <a class="navbar-item fullscreen" @click="openFullscreen()">
               <b-icon icon="fullscreen" />
             </a>
-            <a class="navbar-item">
-              <b-icon icon="bell" />
+            <a class="navbar-item has-dropdown is-hoverable notifications">
+              <a class="navbar-link">
+                <b-icon icon="bell" />
+              </a>
+              <div class="navbar-dropdown is-right">
+                <a class="navbar-item">
+                  <figure class="image" style="width: 38px;">
+                    <img class="image is-24x24 is-rounded" :src="require('@/assets/img/samples/humberto.jpeg')">
+                  </figure>
+                  <div style="display: flex; flex-direction: column;">
+                    <span>Humberto Martins</span>
+                    <span class="is-size-7">Novo usuário cadastrado</span>
+                    <span class="is-size-7 has-text-grey">5 min. atrás</span>
+                  </div>
+                </a>
+                <a class="navbar-item">
+                  <figure class="image" style="width: 38px;">
+                    <img class="image is-24x24 is-rounded" :src="require('@/assets/img/samples/humberto.jpeg')">
+                  </figure>
+                  <div style="display: flex; flex-direction: column;">
+                    <span>Humberto Martins</span>
+                    <span class="is-size-7">Novo usuário cadastrado</span>
+                    <span class="is-size-7 has-text-grey">5 min. atrás</span>
+                  </div>
+                </a>
+                <a class="navbar-item">
+                  <figure class="image" style="width: 38px;">
+                    <img class="image is-24x24 is-rounded" :src="require('@/assets/img/samples/humberto.jpeg')">
+                  </figure>
+                  <div style="display: flex; flex-direction: column;">
+                    <span>Humberto Martins</span>
+                    <span class="is-size-7">Novo usuário cadastrado</span>
+                    <span class="is-size-7 has-text-grey">5 min. atrás</span>
+                  </div>
+                </a>
+                <hr class="navbar-divider">
+                <div class="navbar-item" style="display: flex; justify-content: center;">
+                  <a>Ver todas</a>
+                </div>
+              </div>
             </a>
-            <div class="navbar-item has-dropdown is-hoverable">
+            <div class="navbar-item has-dropdown is-hoverable profile">
               <a class="navbar-link">
                 <figure class="image">
                   <img style="margin-right: 5px;" class="image is-24x24 is-rounded" :src="require('@/assets/img/samples/humberto.jpeg')">
@@ -81,7 +119,7 @@
                 </a>
                 <hr class="navbar-divider">
                 <div class="navbar-item">
-                  Versão 0.9.1
+                  Versão 1.0
                 </div>
               </div>
             </div>
@@ -91,14 +129,14 @@
       </div>
     </section>
     <footer class="main-content columns">
-      <div class="column is-2">
+      <div class="column is-2 is-hidden-mobile">
         <span>Versão: 1.0</span>
       </div>
       <div class="column is-10">
-        <span>
+        <div>
           Todos os direitos reservados © CrediClin - Desenvolvido por:
           <a href="https://consilio.com.br" target="_new">Consilio</a>
-        </span>
+        </div>
       </div>
     </footer>
   </div>
@@ -176,6 +214,26 @@ export default {
         }
       ]
     }
+  },
+  methods: {
+    openFullscreen () {
+      if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+                    (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+        if (document.documentElement.requestFullScreen) {
+          document.documentElement.requestFullScreen()
+        } else if (document.documentElement.mozRequestFullScreen) {
+          document.documentElement.mozRequestFullScreen()
+        } else if (document.documentElement.webkitRequestFullScreen) {
+          document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT)
+        }
+      } else if (document.cancelFullScreen) {
+        document.cancelFullScreen()
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen()
+      } else if (document.webkitCancelFullScreen) {
+        document.webkitCancelFullScreen()
+      }
+    }
   }
 }
 </script>
@@ -211,10 +269,27 @@ export default {
 }
 .is-content {
   padding: 0px;
+  margin: 0px;
+  max-width: 100% !important;
 }
-@media only screen and (max-width: 600px) {
+footer {
+  display: flex;
+  padding: 5px;
+  background-color: #f5f9fb;
+  justify-content: center;
+    z-index: 99;
+  & div {
+    text-align: center;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@media only screen and (max-width: 900px) {
   nav {
     display: flex;
+    justify-content: center;
   }
   .navbar {
     &-brand {
@@ -224,18 +299,73 @@ export default {
       }
     }
   }
-}
-footer {
-  display: flex;
-  padding: 5px;
-  background-color: #f5f9fb;
-  justify-content: center;
-    z-index: 99;
-  & span {
-    text-align: center;
-    font-size: 12px;
+  .is-sidemenu-itens {
+    display: none;
+  }
+  footer {
+    & div {
+    display: block;
+      text-align: center;
+    }
+  }
+  .navbar:hover ~ .is-sidemenu-itens {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+  }
+  .is-sidemenu-itens:hover {
+    display: flex;
+    flex-direction: column;
+  }
+  .is-content .navbar-item {
+    color: #fff;
+    &:hover {
+      color: #1498ea;
+    }
+  }
+  .is-content .navbar-link {
+    color: #fff;
+    &::after {
+      border-color: #fff;
+    }
+    &:hover::after {
+      border-color: #1498ea;
+    }
+    & i {
+      color: #fff;
+    }
+    &:hover {
+      color: #1498ea;
+    }
+  }
+  .is-content .navbar-start {
+    flex: 0;
+  }
+  .is-content .navbar-end {
+    display: flex;
+    flex-direction: row;
+    & .fullscreen {
+      display: none;
+    }
+    & .notifications {
+      display: flex;
+      align-items: center;
+      & .navbar-dropdown {
+        display: none;
+      }
+    }
+    & .profile {
+      height: 100%;
+      & .navbar-link {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        width: 100%;
+        height: 100%;
+      }
+      & .navbar-dropdown {
+        display: none;
+      }
+    }
   }
 }
 </style>

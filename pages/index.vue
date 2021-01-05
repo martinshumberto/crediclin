@@ -1,6 +1,6 @@
 <template>
   <section class="section">
-    <div class="columns is-mobile">
+    <div class="columns">
       <card
         title="Total de clientes"
         footer="Todo o período desde o início"
@@ -59,12 +59,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.grid {
-  display: grid;
-  gap: 2rem;
+// .grid {
+//   display: grid;
+//   gap: 2rem;
 
-  @media (min-width: 768px) {
-    grid-template-columns: 1fr 1fr;
-  }
-}
+//   @media (min-width: 768px) {
+//     grid-template-columns: 1fr 1fr;
+//   }
+// }
 </style>
