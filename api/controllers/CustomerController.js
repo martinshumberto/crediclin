@@ -5,8 +5,31 @@ class CustomerController {
   }
 
   async index (req, res) {
-    const customer = await Customer.findAll()
-    res.status(200).json(customer)
+    const limit = 20
+    let offset = 0
+    await Customer.findAndCountAll()
+      .then((data) => {
+        const page = req.query.page ? req.query.page : 1
+        const pages = Math.ceil(data.count / limit)
+        offset = limit * (page - 1)
+        Customer.findAll({
+          limit,
+          offset,
+          $sort: { id: 1 }
+        })
+          .then((customers) => {
+            res.status(200).json({
+              data: customers,
+              total: data.count,
+              current_page: Number(page),
+              per_page: limit,
+              last_page: pages
+            })
+          })
+      })
+      .catch(() => {
+        res.status(500).send('Internal Server Error')
+      })
   }
 
   async show (req, res) {

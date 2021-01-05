@@ -20,17 +20,37 @@ class UserController {
       return res.status(400).json({ error: 'O usuário já existe.' })
     }
 
-    // const user = await User.create(req.body)
-    // return res.status(200).json(user);
     const { id, name, email, role } = await User.create(req.body)
-
     return res.status(201).json({ id, name, email, role })
   }
 
   async index (req, res) {
-    const user = await User.findAll()
-
-    res.status(200).json(user)
+    const limit = 20
+    let offset = 0
+    await User.findAndCountAll()
+      .then((data) => {
+        const page = req.query.page ? req.query.page : 1
+        const pages = Math.ceil(data.count / limit)
+        offset = limit * (page - 1)
+        User.findAll({
+          attributes: ['id', 'firstname', 'lastname', 'email', 'role'],
+          limit,
+          offset,
+          $sort: { id: 1 }
+        })
+          .then((users) => {
+            res.status(200).json({
+              data: users,
+              total: data.count,
+              current_page: Number(page),
+              per_page: limit,
+              last_page: pages
+            })
+          })
+      })
+      .catch(() => {
+        res.status(500).send('Internal Server Error')
+      })
   }
 
   async show (req, res) {
