@@ -158,17 +158,17 @@ export default {
             {
               title: 'Clientes',
               icon: 'account-multiple',
-              to: '/clientes/listar'
+              to: '/clientes'
             },
             {
               title: 'Grupos',
               icon: 'account-supervisor',
-              to: '/grupos/listar'
+              to: '/grupos'
             },
             {
               title: 'Serviços',
               icon: 'apps',
-              to: '/servicos/listar'
+              to: '/servicos'
             }
           ]
         },
@@ -198,12 +198,12 @@ export default {
             {
               title: 'Empresas',
               icon: 'domain',
-              to: '/administracao/empresas/listar'
+              to: '/administracao/empresas'
             },
             {
               title: 'Usuários',
               icon: 'account-multiple',
-              to: '/administracao/usuarios/listar'
+              to: '/administracao/usuarios'
             },
             {
               title: 'Configurações',
