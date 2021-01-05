@@ -1,24 +1,26 @@
-const express = require('express')
+import bodyParser from 'body-parser'
+import express from 'express'
+import './database'
+import routes from './routes'
+
 require('dotenv').config()
+class App {
+  constructor () {
+    this.server = express()
 
-// Create express instance
-const app = express()
+    this.middlewares()
+    this.router()
+  }
 
-// Require API routes
-const users = require('./routes/users')
-const test = require('./routes/test')
+  middlewares () {
+    this.server.use(express.json())
+    this.server.use(express.urlencoded({ extended: true }))
+    this.server.use(bodyParser.json())
+  }
 
-// Import API Routes
-app.use(users)
-app.use(test)
-
-// Export express app
-module.exports = app
-
-// Start standalone server if directly running
-if (require.main === module) {
-  const port = process.env.PORT || 3001
-  app.listen(port, () => {
-    console.log(`API server listening on port ${port}`)
-  })
+  router () {
+    this.server.use(routes)
+  }
 }
+
+module.exports = new App().server
