@@ -11,7 +11,9 @@ class User extends Model {
       role: Sequelize.INTEGER
     }, {
       sequelize,
-      paranoid: true
+      paranoid: true,
+      timestamps: false,
+      underscored: true
     })
 
     this.addHook('beforeSave', async (user) => {
