@@ -1,0 +1,39 @@
+$primary: #1498ea;
+$primary-invert: findColorInvert($primary);
+
+body {
+    font-size: 0.9em;
+}
+body, html, #__nuxt, #__layout {
+    height: 100%;
+}
+.menu-list a.is-active {
+    background-color: $primary;
+}
+.container {
+    background-color: #f0f2f7;
+}
+
+.b-table, .b-table .level {
+    background-color: #fff;
+}
+
+.pagination-link.is-current {
+    background-color: $primary;
+    border-color: $primary;
+    color: #fff;
+}
+
+.select {
+  width: 100% !important;
+  & select {
+    width: 100% !important;
+  }
+}
+
+.is-right {
+    float: right;
+}
+.is-left {
+    float: left;
+}

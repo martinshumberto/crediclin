@@ -13,6 +13,9 @@ class CustomerController {
         const pages = Math.ceil(data.count / limit)
         offset = limit * (page - 1)
         Customer.findAll({
+          attributes: {
+            include: ['created_at', 'updated_at', 'deleted_at']
+          },
           limit,
           offset,
           $sort: { id: 1 }

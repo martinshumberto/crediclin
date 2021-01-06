@@ -8,6 +8,7 @@ class Customer extends Model {
       email: Sequelize.STRING,
       phone: Sequelize.STRING,
       cell: Sequelize.STRING,
+      cpf: Sequelize.STRING,
       rg: Sequelize.STRING,
       rg_issue_date: Sequelize.DATE,
       rg_organ_emitter: Sequelize.STRING,

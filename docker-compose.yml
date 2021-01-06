@@ -16,23 +16,23 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE}
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: crediclin-node
-    restart: always
-    user: "node"
-    env_file: .env
-    environment: 
-      NODE_ENV: production
-    depends_on: 
-      - db
-    ports:
-      - ${PORT}:${PORT}
-    working_dir: /usr/app
-    logging:
-      driver: "json-file"
-      options: 
-        max-size: "10m"
-        max-file: "5"
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: crediclin-node
+  #   restart: always
+  #   user: "node"
+  #   env_file: .env
+  #   environment: 
+  #     NODE_ENV: production
+  #   depends_on: 
+  #     - db
+  #   ports:
+  #     - ${PORT}:${PORT}
+  #   working_dir: /usr/app
+  #   logging:
+  #     driver: "json-file"
+  #     options: 
+  #       max-size: "10m"
+  #       max-file: "5"

@@ -7,7 +7,7 @@ module.exports = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   define: {
-    timestamps: true,
+    timestamps: false,
     underscored: true,
     underscoredAll: true
   }

@@ -1,9 +1,22 @@
 <template>
   <section class="section">
     <div class="box">
-      <h1 class="title is-size-5">
-        Listagem dos clientes
-      </h1>
+      <div class="title" style="display:flex;">
+        <h1 class="title is-size-5" style="flex: 1;">
+          Listagem dos clientes
+        </h1>
+        <div class="is-right">
+          <b-button
+            size="is-small"
+            type="is-primary"
+            icon-left="plus"
+            @click="newCustomer()"
+          >
+            Adicionar
+          </b-button>
+        </div>
+      </div>
+
       <div class="container">
         <b-table
           :data="isEmpty ? [] : data"
@@ -22,73 +35,287 @@
           aria-previous-label="Página anterior"
           aria-page-label="Página"
           aria-current-label="Página atual"
+          pagination-size="is-small"
           @page-change="onPageChange"
         >
           <b-table-column v-slot="props" field="id" label="ID" width="40" numeric>
             {{ props.row.id }}
           </b-table-column>
 
-          <b-table-column v-slot="props" field="first_name" sortable label="Primeiro nome">
-            {{ props.row.first_name }}
+          <b-table-column v-slot="props" field="firstname" sortable label="Primeiro nome">
+            {{ props.row.firstname }}
           </b-table-column>
 
-          <b-table-column v-slot="props" field="last_name" label="Sobrenome">
-            {{ props.row.last_name }}
+          <b-table-column v-slot="props" field="lastname" label="Sobrenome">
+            {{ props.row.lastname }}
           </b-table-column>
 
           <b-table-column v-slot="props" field="cpf" label="CPF">
-            {{ props.row.cpf }}
+            {{ props.row.cpf | maskCPF }}
           </b-table-column>
 
           <b-table-column v-slot="props" field="birth" label="Data de nascimento">
-            {{ props.row.birth }}
+            {{ props.row.birth | date }}
           </b-table-column>
 
-          <b-table-column v-slot="props" field="date" label="Data de criação" centered>
+          <b-table-column v-slot="props" field="locale" label="Cidade / UF">
+            {{ props.row.city }} / {{ props.row.state }}
+          </b-table-column>
+
+          <b-table-column v-slot="props" field="date" label="Data da criação" centered>
             <span class="tag is-success">
-              {{ new Date(props.row.created_at).toLocaleDateString() }}
+              {{ props.row.created_at | datetime }}
             </span>
+          </b-table-column>
+
+          <b-table-column field="actions" label="Ações" centered>
+            <b-tooltip type="is-primary" label="Editar">
+              <b-button
+                size="is-small"
+                type="is-primary"
+                icon-right="lead-pencil"
+              />
+            </b-tooltip>
+            <b-tooltip type="is-success" label="Negociações">
+              <b-button
+                size="is-small"
+                type="is-success"
+                icon-right="animation"
+              />
+            </b-tooltip>
+            <b-tooltip type="is-danger" label="Excluir">
+              <b-button
+                size="is-small"
+                type="is-danger"
+                icon-right="delete"
+              />
+            </b-tooltip>
           </b-table-column>
         </b-table>
       </div>
     </div>
+    <b-modal v-model="modalCustomer" :width="640" scroll="keep">
+      <div class="card">
+        <div class="card-content">
+          <div class="media">
+            <div class="media-content">
+              <p class="title is-4">
+                Adicionar cliente
+              </p>
+              <p class="subtitle is-6">
+                Preencha as informações abaixo para cadastrar um novo cliente.
+              </p>
+            </div>
+          </div>
+
+          <div class="content content-newcustomer">
+            <form ref="newcustomer" @submit.prevent="newCustomer">
+              <div class="columns">
+                <div class="column is-6">
+                  <b-field label="Primeiro nome">
+                    <b-input v-model="customer.firstname" />
+                  </b-field>
+                </div>
+                <div class="column is-6">
+                  <b-field label="Sobrenome">
+                    <b-input v-model="customer.lastname" />
+                  </b-field>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-8">
+                  <b-field label="E-mail">
+                    <b-input v-model="customer.email" />
+                  </b-field>
+                </div>
+                <div class="column is-4">
+                  <b-field label="Aniversário">
+                    <b-input v-model="customer.birth" />
+                  </b-field>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-6">
+                  <b-field label="Telefone">
+                    <b-input v-model="customer.phone" />
+                  </b-field>
+                </div>
+                <div class="column is-6">
+                  <b-field label="Celular">
+                    <b-input v-model="customer.cell" />
+                  </b-field>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-6">
+                  <b-field label="CPF">
+                    <b-input v-model="customer.cpf" />
+                  </b-field>
+                </div>
+                <div class="column is-6">
+                  <b-field label="RG">
+                    <b-input v-model="customer.rg" />
+                  </b-field>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-6">
+                  <b-field label="Data emissão RG">
+                    <b-input v-model="customer.rg_issue_date" />
+                  </b-field>
+                </div>
+                <div class="column is-6">
+                  <b-field label="Orgão emissor RG">
+                    <b-input v-model="customer.rg_organ_emitter" />
+                  </b-field>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-6">
+                  <b-field label="CEP">
+                    <b-input v-model="customer.cep" />
+                  </b-field>
+                </div>
+                <div class="column is-6">
+                  <b-field label="Endereço">
+                    <b-input v-model="customer.address" />
+                  </b-field>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-8">
+                  <b-field label="Complemento">
+                    <b-input v-model="customer.complement" />
+                  </b-field>
+                </div>
+                <div class="column is-4">
+                  <b-field label="Número">
+                    <b-input v-model="customer.number" />
+                  </b-field>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-4">
+                  <b-field label="Bairro">
+                    <b-input v-model="customer.neighborhood" />
+                  </b-field>
+                </div>
+                <div class="column is-2">
+                  <b-field label="Estado">
+                    <b-select v-model="customer.state" @change.native="selectState()">
+                      <option
+                        v-for="item in states"
+                        :key="item['ID']"
+                        :value="item['ID']"
+                      >
+                        {{ item.Sigla }}
+                      </option>
+                    </b-select>
+                  </b-field>
+                </div>
+                <div class="column is-6">
+                  <b-field label="Cidade" style="width: 100%;">
+                    <b-select v-model="customer.city" :disabled="selectedCities && selectedCities.length === 0">
+                      <option value="" disabled selected>
+                        {{ selectedCities && selectedCities.length === 0 ? 'Selecione um estado' : 'Selecione uma cidade' }}
+                      </option>
+                      <option
+                        v-for="item in selectedCities"
+                        :key="item['ID']"
+                        :value="item['ID']"
+                      >
+                        {{ item.Nome }}
+                      </option>
+                    </b-select>
+                  </b-field>
+                </div>
+              </div>
+              <div class="columns" style="margin-top: 20px;">
+                <div class="column is-12">
+                  <b-button
+                    class="is-right"
+                    type="is-primary"
+                    tag="input"
+                    native-type="submit"
+                    value="Cadastrar"
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </b-modal>
   </section>
 </template>
 <script>
+import { cities } from '../../mocks/cities'
+import { states } from '../../mocks/states'
+
 export default {
   name: 'ListClients',
   data () {
     return {
       data: [],
-      perPage: 1,
-      page: 1,
-      lastPage: 1,
       total: 0,
-      isEmpty: true,
+      page: 1,
+      perPage: 1,
+      lastPage: 1,
+      isEmpty: false,
       isBordered: false,
       isStriped: false,
       isNarrowed: false,
       isHoverable: false,
       isFocusable: false,
       isLoading: false,
-      hasMobileCards: true
+      hasMobileCards: true,
+      modalCustomer: false,
+      customer: {
+        firstname: '',
+        lastname: '',
+        email: '',
+        phone: '',
+        cell: '',
+        cpf: '',
+        rg: '',
+        rg_issue_date: '',
+        rg_organ_emitter: '',
+        birth: '',
+        address: '',
+        complement: '',
+        number: '',
+        neighborhood: '',
+        city: '',
+        state: ''
+      },
+      selectedCities: [],
+      cities,
+      states
     }
   },
   mounted () {
     this.loadAsyncData()
   },
   methods: {
-    async loadAsyncData () {
-      const params = [
-        `page=${this.page}`,
-        `search=${this.page}`
-      ].join('&')
+    selectState () {
+      const self = this
+      this.cities.forEach(filterCities)
 
+      function filterCities (value, index, array) {
+        if (value.Estado === self.customer.state) {
+          self.selectedCities.push(value)
+        }
+      }
+    },
+    newCustomer () {
+      this.modalCustomer = true
+    },
+    async loadAsyncData () {
       this.isLoading = true
 
       await this.$store
-        .dispatch('ads/fetchAds', params)
-        .then(({ data }) => {
+        .dispatch('customers/getCustomers', { page: this.page })
+        .then((data) => {
           this.data = data.data
           this.perPage = data.per_page
           this.page = data.current_page
@@ -110,3 +337,13 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.content-newcustomer {
+  & .column {
+    padding: 5px 0.75rem !important;
+    & label {
+      font-size: 9px !important;
+    }
+  }
+}
+</style>

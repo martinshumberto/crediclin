@@ -20,16 +20,5 @@ $colors: (
 
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
+@import "./custom.scss";
 
-body {
-    font-size: 0.9em;
-}
-body, html, #__nuxt, #__layout {
-    height: 100%;
-}
-.menu-list a.is-active {
-    background-color: $primary;
-}
-.container {
-    background-color: #f0f2f7;
-}
