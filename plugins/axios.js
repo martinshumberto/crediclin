@@ -15,44 +15,32 @@ export default ({ $axios, $auth, store, route }) => {
     }
     return config
   })
-  $axios.onError((config) => {
+  $axios.onRequestError((config) => {
     if (process.client) {
       window.$nuxt.$loading.start()
     }
     return config
   })
 
-  // $axios.interceptors.request.use((config) => {
-  //   if (process.client) {
-  //     window.$nuxt.$loading.start()
-  //   }
-  //   return config
-  // }, (error) => {
-  //   if (process.client) {
-  //     window.$nuxt.$loading.start()
-  //   }
-  //   return Promise.reject(error)
-  // })
+  $axios.onResponse((response) => {
+    if (process.client) {
+      window.$nuxt.$loading.finish()
+    }
+    return response
+  })
+  $axios.onResponseError((error) => {
+    if (process.client) {
+      window.$nuxt.$loading.finish()
+    }
+    const status = parseInt(error.response ? error.response.status : null)
 
-  // Interceptor axios response global
-  // $axios.interceptors.response.use((response) => {
-  //   if (process.client) {
-  //     window.$nuxt.$loading.finish()
-  //   }
-  //   return response
-  // }, (error) => {
-  //   if (process.client) {
-  //     window.$nuxt.$loading.finish()
-  //   }
-  //   const status = parseInt(error.response ? error.response.status : null)
-
-  //   if (status === 422 || status === 412 || status === 400 || status === 403) {
-  //     return Promise.reject(error.response)
-  //   } else if (status === 500) {
-  //     return Promise.reject(error.response)
-  //   } else if (status === 401) {
-  //     return Promise.reject(error.response)
-  //   }
-  //   return Promise.reject(error)
-  // })
+    if (status === 422 || status === 412 || status === 400 || status === 403) {
+      return Promise.reject(error.response)
+    } else if (status === 500) {
+      return Promise.reject(error.response)
+    } else if (status === 401) {
+      return Promise.reject(error.response)
+    }
+    return Promise.reject(error)
+  })
 }
