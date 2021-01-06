@@ -1,4 +1,4 @@
-import api from '../services/api'
+import api from '../services/customers'
 
 const namespaced = true
 
@@ -25,7 +25,7 @@ const mutations = {
 const actions = {
   addCustomer ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.addCustomer(payload)
+      api(this.$axios).addCustomer(payload)
         .then(({ data }) => {
           commit('ADD_CUSTOMER', data.return)
           resolve(data)
@@ -35,7 +35,7 @@ const actions = {
   },
   getCustomers ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.getCustomers(payload)
+      api(this.$axios).getCustomers(payload)
         .then(({ data }) => {
           commit('SET_CUSTOMERS', data)
           resolve(data)
@@ -45,7 +45,7 @@ const actions = {
   },
   delCustomer ({ commit }, id) {
     return new Promise((resolve, reject) => {
-      api.delCustomer(id)
+      api(this.$axios).delCustomer(id)
         .then(({ data }) => {
           commit('DEL_CUSTOMER', id)
           resolve(data)
