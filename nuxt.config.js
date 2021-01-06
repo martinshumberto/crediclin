@@ -45,11 +45,58 @@ export default {
     'nuxt-buefy',
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
-    '@nuxtjs/dotenv'
+    '@nuxtjs/dotenv',
+    '@nuxtjs/auth-next'
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-  axios: {},
+  axios: {
+    credentials: true,
+    baseUrl: process.env.API_SITE
+  },
+
+  // Auth module configuration (https://auth.nuxtjs.org/)
+  auth: {
+    redirect: {
+      login: '/logar',
+      logout: '/logar',
+      home: '/'
+      // callback: '/',
+    },
+    strategies: {
+      users: {
+        scheme: 'local',
+        token: {
+          property: 'token',
+          required: true,
+          type: 'Bearer'
+        },
+        user: {
+          autoFetch: true,
+          property: false
+        },
+        endpoints: {
+          login: {
+            url: `${process.env.API_SITE}auth/users/login`,
+            method: 'post'
+          },
+          logout: {
+            url: `${process.env.API_SITE}auth/users/logout`,
+            method: 'post'
+          },
+          user: {
+            url: `${process.env.API_SITE}auth/users/logged`,
+            method: 'get'
+          }
+        }
+      }
+    },
+    plugins: [{ src: '~/plugins/axios', ssr: true }, '~/plugins/auth.js']
+  },
+
+  router: {
+    middleware: ['auth']
+  },
 
   /*
   ** Server Middleware
@@ -66,6 +113,7 @@ export default {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
+    extractCSS: true
   },
 
   srcDir: path.resolve(__dirname)

@@ -334,7 +334,6 @@ export default {
         })
     },
     delCustomer (id) {
-      console.log('ID: ', id)
       this.$store
         .dispatch('customers/delCustomer', id)
         .then((data) => {

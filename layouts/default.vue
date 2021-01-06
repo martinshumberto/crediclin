@@ -114,7 +114,7 @@
                 <a class="navbar-item">
                   Alterar senha
                 </a>
-                <a class="navbar-item">
+                <a class="navbar-item" @click="logout()">
                   Sair
                 </a>
                 <hr class="navbar-divider">
@@ -216,6 +216,9 @@ export default {
     }
   },
   methods: {
+    async logout () {
+      await this.$auth.logout()
+    },
     openFullscreen () {
       if ((document.fullScreenElement && document.fullScreenElement !== null) ||
                     (!document.mozFullScreen && !document.webkitIsFullScreen)) {

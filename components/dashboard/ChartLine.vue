@@ -34,6 +34,7 @@
 
 <script>
 export default {
+  name: 'ChartLine',
   data () {
     return {
       btn: [

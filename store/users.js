@@ -18,7 +18,7 @@ const mutations = {
 const actions = {
   getUsers ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.getUsers(payload)
+      api(this.$axios).getUsers(payload)
         .then(({ data }) => {
           commit('SET_USERS', data)
           resolve(data)
