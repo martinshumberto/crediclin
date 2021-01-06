@@ -1,7 +1,5 @@
-export default function ({ $auth, redirect }) {
-  const store = JSON.parse(window.localStorage.getItem('vuex'))
-
+export default function ({ store, redirect }) {
   if (!store.state.auth.loggedIn) {
-    redirect('/logar')
+    return redirect('/logar')
   }
 }

@@ -66,7 +66,7 @@ class CustomerController {
           })
       })
       .catch(() => {
-        res.status(500).send('Internal Server Error')
+        res.status(500).send({ erros: ['Estamos enfrentando instabilidades no momento, tente novamente mais tarde.'] })
       })
   }
 
@@ -84,7 +84,7 @@ class CustomerController {
     const { id } = req.params
 
     await Customer.destroy({ where: { id: Number(id) } })
-    return res.status(200).json({ msg: `O cliente de id: ${id}, foi deletado com sucesso` })
+    return res.status(200).json({ msg: `O cliente de id: ${id}, foi deletado com sucesso.` })
   }
 }
 

@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2'
 
 export default ({ $axios, $auth, store, route }) => {
   if ($auth) {
@@ -35,11 +36,56 @@ export default ({ $axios, $auth, store, route }) => {
     const status = parseInt(error.response ? error.response.status : null)
 
     if (status === 422 || status === 412 || status === 400 || status === 403) {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'bottom-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      })
+      Toast.fire({
+        icon: 'error',
+        title: error.response.data.errors[0]
+      })
       return Promise.reject(error.response)
     } else if (status === 500) {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'bottom-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      })
+      Toast.fire({
+        icon: 'error',
+        title: 'Estamos enfrentando instabilidades no momento, tente novamente mais tarde.'
+      })
       return Promise.reject(error.response)
     } else if (status === 401) {
-      return Promise.reject(error.response)
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'bottom-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      })
+      Toast.fire({
+        icon: 'error',
+        title: error.response.data.errors[0]
+      })
+      // return Promise.reject(error.response)
     }
     return Promise.reject(error)
   })

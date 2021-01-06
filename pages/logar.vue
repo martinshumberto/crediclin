@@ -2,10 +2,10 @@
   <section class="hero is-primary is-fullheight">
     <div class="hero-body">
       <div class="container">
-        <form @submit.prevent="login()">
+        <form>
           <div class="columns is-centered">
             <div class="column is-5-tablet is-4-desktop is-3-widescreen">
-              <form action="" class="box">
+              <form class="box" @keyup.enter="login()">
                 <div class="field">
                   <label for="" class="label">E-mail</label>
                   <div class="control has-icons-left">
@@ -46,7 +46,6 @@
                   <b-button
                     class="is-primary"
                     tag="input"
-                    native-type="submit"
                     value="Logar"
                     @click="login()"
                   />
@@ -66,28 +65,22 @@ export default {
   data () {
     return {
       email: undefined,
-      password: undefined
+      password: undefined,
+      error: undefined
     }
   },
   methods: {
     async login () {
-      return await this.$auth.loginWith('users', {
-        data: {
-          email: this.email,
-          password: this.password
-        }
-      })
-        .then((res) => {
-          this.$router.push('/')
+      try {
+        await this.$auth.loginWith('users', {
+          data: {
+            email: this.email,
+            password: this.password
+          }
         })
-        .catch((err) => {
-          this.$buefy.notification.open({
-            duration: 3000,
-            message: err.response.data.errors[0],
-            position: 'is-bottom-right',
-            type: 'is-danger'
-          })
-        })
+      } catch (e) {
+        this.error = e.response.data.errors[0]
+      }
     }
   }
 }

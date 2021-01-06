@@ -28,7 +28,8 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    'plugins/filters.js'
+    'plugins/filters.js',
+    'plugins/sweetalert.js'
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -61,7 +62,6 @@ export default {
       login: '/logar',
       logout: '/logar',
       home: '/'
-      // callback: '/',
     },
     strategies: {
       users: {

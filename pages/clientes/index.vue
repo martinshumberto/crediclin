@@ -317,19 +317,20 @@ export default {
         .dispatch('customers/addCustomer', this.customer)
         .then(({ data }) => {
           this.modalNewCustomer = false
-          this.$buefy.notification.open({
-            duration: 3000,
-            message: data.msg,
-            position: 'is-bottom-right',
-            type: 'is-success'
+          const Toast = this.$swal.mixin({
+            toast: true,
+            position: 'bottom-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', this.$swal.stopTimer)
+              toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+            }
           })
-        })
-        .catch((err) => {
-          this.$buefy.notification.open({
-            duration: 3000,
-            message: err.response.data.errors[0],
-            position: 'is-bottom-right',
-            type: 'is-danger'
+          Toast.fire({
+            icon: 'success',
+            title: data.msg
           })
         })
     },
@@ -337,19 +338,20 @@ export default {
       this.$store
         .dispatch('customers/delCustomer', id)
         .then((data) => {
-          this.$buefy.notification.open({
-            duration: 3000,
-            message: data.msg,
-            position: 'is-bottom-right',
-            type: 'is-success'
+          const Toast = this.$swal.mixin({
+            toast: true,
+            position: 'bottom-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', this.$swal.stopTimer)
+              toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+            }
           })
-        })
-        .catch((err) => {
-          this.$buefy.notification.open({
-            duration: 3000,
-            message: err.response.data.errors[0],
-            position: 'is-bottom-right',
-            type: 'is-danger'
+          Toast.fire({
+            icon: 'error',
+            title: data.msg
           })
         })
     },
