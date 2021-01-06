@@ -36,7 +36,9 @@ class UserController {
           attributes: ['id', 'firstname', 'lastname', 'email', 'role', 'created_at', 'updated_at', 'deleted_at'],
           limit,
           offset,
-          $sort: { id: 1 }
+          order: [
+            ['created_at', 'DESC']
+          ]
         })
           .then((users) => {
             res.status(200).json({

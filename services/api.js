@@ -15,6 +15,9 @@ export default {
 
     return request.get(`/customers?${params}`)
   },
+  delCustomer (id) {
+    return request.delete(`/customers/${id}`)
+  },
   getUsers (payload) {
     const params = [
       `page=${payload.page}`

@@ -23,10 +23,6 @@ class CustomerController {
       state: Yup.string()
     })
 
-    // if (!(await schema.isValid(req.body))) {
-    //   return res.status(401).json({ error: 'Algo deu errado na validação.' })
-    // }
-
     await schema.validate(req.body).catch((err) => {
       return res.status(400).json(err)
     })
@@ -34,11 +30,11 @@ class CustomerController {
     const userExists = await Customer.findOne({ where: { email: req.body.email } })
 
     if (userExists) {
-      return res.status(400).json({ error: 'Já existe um usuário utilizando esse e-mail.' })
+      return res.status(400).json({ errors: ['Já existe um usuário utilizando esse e-mail.'] })
     }
 
     const returnCustomer = await Customer.create(req.body)
-    return res.status(201).json({ return: returnCustomer, msg: 'Cliente cadastrado com sucesso!' })
+    return res.status(201).json({ msg: 'Cliente cadastrado com sucesso!', return: returnCustomer })
   }
 
   async index (req, res) {
@@ -88,7 +84,7 @@ class CustomerController {
     const { id } = req.params
 
     await Customer.destroy({ where: { id: Number(id) } })
-    return res.status(200).json(`O cliente de id: ${id} foi deletada com sucesso`)
+    return res.status(200).json({ msg: `O cliente de id: ${id}, foi deletado com sucesso` })
   }
 }
 

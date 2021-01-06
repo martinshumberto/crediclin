@@ -68,7 +68,7 @@
             </span>
           </b-table-column>
 
-          <b-table-column field="actions" label="Ações" centered>
+          <b-table-column v-slot="props" field="actions" label="Ações" centered>
             <b-tooltip type="is-primary" label="Editar">
               <b-button
                 size="is-small"
@@ -88,6 +88,7 @@
                 size="is-small"
                 type="is-danger"
                 icon-right="delete"
+                @click="delCustomer(props.row.id)"
               />
             </b-tooltip>
           </b-table-column>
@@ -109,7 +110,7 @@
           </div>
 
           <div class="content content-newcustomer">
-            <form ref="newcustomer" @submit.prevent="newCustomer()">
+            <form ref="newcustomer" @submit.prevent="addCustomer()">
               <div class="columns">
                 <div class="column is-6">
                   <b-field label="Primeiro nome">
@@ -311,11 +312,32 @@ export default {
     this.loadAsyncData()
   },
   methods: {
-    newCustomer () {
+    addCustomer () {
       this.$store
         .dispatch('customers/addCustomer', this.customer)
         .then(({ data }) => {
           this.modalNewCustomer = false
+          this.$buefy.notification.open({
+            duration: 3000,
+            message: data.msg,
+            position: 'is-bottom-right',
+            type: 'is-success'
+          })
+        })
+        .catch((err) => {
+          this.$buefy.notification.open({
+            duration: 3000,
+            message: err.response.data.errors[0],
+            position: 'is-bottom-right',
+            type: 'is-danger'
+          })
+        })
+    },
+    delCustomer (id) {
+      console.log('ID: ', id)
+      this.$store
+        .dispatch('customers/delCustomer', id)
+        .then((data) => {
           this.$buefy.notification.open({
             duration: 3000,
             message: data.msg,
