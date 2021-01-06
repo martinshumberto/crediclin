@@ -144,6 +144,7 @@
 
 <script>
 export default {
+  name: 'LayoutDefault',
   data () {
     return {
       items: [
