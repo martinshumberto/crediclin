@@ -13,6 +13,7 @@ class Customer extends Model {
       rg_issue_date: Sequelize.DATE,
       rg_organ_emitter: Sequelize.STRING,
       birth: Sequelize.DATE,
+      cep: Sequelize.STRING,
       address: Sequelize.STRING,
       complement: Sequelize.STRING,
       number: Sequelize.INTEGER,

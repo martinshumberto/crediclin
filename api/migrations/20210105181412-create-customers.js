@@ -51,6 +51,10 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: true
       },
+      cep: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
       address: {
         type: Sequelize.STRING,
         allowNull: true

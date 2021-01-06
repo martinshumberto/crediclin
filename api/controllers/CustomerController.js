@@ -1,7 +1,44 @@
+import * as Yup from 'yup'
 import Customer from '../models/Customer'
 
 class CustomerController {
   async store (req, res) {
+    const schema = Yup.object().shape({
+      firstname: Yup.string().required('O primeiro nome é obrigátorio.'),
+      lastname: Yup.string().required('O sobrenome é obrigátorio.'),
+      email: Yup.string().email('O e-mail é inválido.').required('O e-mail é obrigátorio.'),
+      phone: Yup.string(),
+      cell: Yup.string().required('O celular é obrigátorio.').min(9),
+      cpf: Yup.string().min(11),
+      rg: Yup.string(),
+      rg_issue_date: Yup.date(),
+      rg_organ_emitter: Yup.string(),
+      birth: Yup.date(),
+      cep: Yup.string().min(8),
+      address: Yup.string(),
+      complement: Yup.string(),
+      number: Yup.string(),
+      neighborhood: Yup.string(),
+      city: Yup.string(),
+      state: Yup.string()
+    })
+
+    // if (!(await schema.isValid(req.body))) {
+    //   return res.status(401).json({ error: 'Algo deu errado na validação.' })
+    // }
+
+    await schema.validate(req.body).catch((err) => {
+      return res.status(400).json(err)
+    })
+
+    const userExists = await Customer.findOne({ where: { email: req.body.email } })
+
+    if (userExists) {
+      return res.status(400).json({ error: 'Já existe um usuário utilizando esse e-mail.' })
+    }
+
+    const returnCustomer = await Customer.create(req.body)
+    return res.status(201).json({ return: returnCustomer, msg: 'Cliente cadastrado com sucesso!' })
   }
 
   async index (req, res) {
@@ -18,7 +55,9 @@ class CustomerController {
           },
           limit,
           offset,
-          $sort: { id: 1 }
+          order: [
+            ['created_at', 'DESC']
+          ]
         })
           .then((customers) => {
             res.status(200).json({

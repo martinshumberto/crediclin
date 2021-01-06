@@ -10,7 +10,7 @@
             size="is-small"
             type="is-primary"
             icon-left="plus"
-            @click="newCustomer()"
+            @click="modalNewCustomer = true"
           >
             Adicionar
           </b-button>
@@ -51,15 +51,15 @@
           </b-table-column>
 
           <b-table-column v-slot="props" field="cpf" label="CPF">
-            {{ props.row.cpf | maskCPF }}
+            {{ props.row.cpf ? $options.filters.maskCPF(props.row.cpf) : '-' }}
           </b-table-column>
 
           <b-table-column v-slot="props" field="birth" label="Data de nascimento">
-            {{ props.row.birth | date }}
+            {{ props.row.birth ? $options.filters.date(props.row.birth) : '-' }}
           </b-table-column>
 
           <b-table-column v-slot="props" field="locale" label="Cidade / UF">
-            {{ props.row.city }} / {{ props.row.state }}
+            {{ props.row.city ? (props.row.city + '/' + props.row.state) : '-' }}
           </b-table-column>
 
           <b-table-column v-slot="props" field="date" label="Data da criação" centered>
@@ -94,7 +94,7 @@
         </b-table>
       </div>
     </div>
-    <b-modal v-model="modalCustomer" :width="640" scroll="keep">
+    <b-modal v-model="modalNewCustomer" :width="640" scroll="keep">
       <div class="card">
         <div class="card-content">
           <div class="media">
@@ -109,7 +109,7 @@
           </div>
 
           <div class="content content-newcustomer">
-            <form ref="newcustomer" @submit.prevent="newCustomer">
+            <form ref="newcustomer" @submit.prevent="newCustomer()">
               <div class="columns">
                 <div class="column is-6">
                   <b-field label="Primeiro nome">
@@ -130,7 +130,13 @@
                 </div>
                 <div class="column is-4">
                   <b-field label="Aniversário">
-                    <b-input v-model="customer.birth" />
+                    <b-datepicker
+                      v-model="customer.birth"
+                      :show-week-number="false"
+                      locale="pt-BR"
+                      icon="calendar-today"
+                      trap-focus
+                    />
                   </b-field>
                 </div>
               </div>
@@ -161,7 +167,13 @@
               <div class="columns">
                 <div class="column is-6">
                   <b-field label="Data emissão RG">
-                    <b-input v-model="customer.rg_issue_date" />
+                    <b-datepicker
+                      v-model="customer.rg_issue_date"
+                      :show-week-number="false"
+                      locale="pt-BR"
+                      icon="calendar-today"
+                      trap-focus
+                    />
                   </b-field>
                 </div>
                 <div class="column is-6">
@@ -173,7 +185,7 @@
               <div class="columns">
                 <div class="column is-6">
                   <b-field label="CEP">
-                    <b-input v-model="customer.cep" />
+                    <b-input v-model="customer.cep" maxlength="9" @input="findCEP()" />
                   </b-field>
                 </div>
                 <div class="column is-6">
@@ -206,23 +218,23 @@
                       <option
                         v-for="item in states"
                         :key="item['ID']"
-                        :value="item['ID']"
+                        :value="item.Uf"
                       >
-                        {{ item.Sigla }}
+                        {{ item.Uf }}
                       </option>
                     </b-select>
                   </b-field>
                 </div>
                 <div class="column is-6">
                   <b-field label="Cidade" style="width: 100%;">
-                    <b-select v-model="customer.city" :disabled="selectedCities && selectedCities.length === 0">
+                    <b-select v-model="customer.city">
                       <option value="" disabled selected>
                         {{ selectedCities && selectedCities.length === 0 ? 'Selecione um estado' : 'Selecione uma cidade' }}
                       </option>
                       <option
                         v-for="item in selectedCities"
                         :key="item['ID']"
-                        :value="item['ID']"
+                        :value="item.Nome"
                       >
                         {{ item.Nome }}
                       </option>
@@ -249,8 +261,9 @@
   </section>
 </template>
 <script>
-import { cities } from '../../mocks/cities'
-import { states } from '../../mocks/states'
+import { cities } from '~/mocks/cities'
+import { states } from '~/mocks/states'
+import { cep } from '~/services/http'
 
 export default {
   name: 'ListClients',
@@ -269,24 +282,25 @@ export default {
       isFocusable: false,
       isLoading: false,
       hasMobileCards: true,
-      modalCustomer: false,
+      modalNewCustomer: false,
       customer: {
-        firstname: '',
-        lastname: '',
-        email: '',
-        phone: '',
-        cell: '',
-        cpf: '',
-        rg: '',
-        rg_issue_date: '',
-        rg_organ_emitter: '',
-        birth: '',
-        address: '',
-        complement: '',
-        number: '',
-        neighborhood: '',
-        city: '',
-        state: ''
+        firstname: undefined,
+        lastname: undefined,
+        email: undefined,
+        phone: undefined,
+        cell: undefined,
+        cpf: undefined,
+        rg: undefined,
+        rg_issue_date: undefined,
+        rg_organ_emitter: undefined,
+        birth: undefined,
+        cep: undefined,
+        address: undefined,
+        complement: undefined,
+        number: undefined,
+        neighborhood: undefined,
+        city: undefined,
+        state: undefined
       },
       selectedCities: [],
       cities,
@@ -297,18 +311,48 @@ export default {
     this.loadAsyncData()
   },
   methods: {
+    newCustomer () {
+      this.$store
+        .dispatch('customers/addCustomer', this.customer)
+        .then(({ data }) => {
+          this.modalNewCustomer = false
+          this.$buefy.notification.open({
+            duration: 3000,
+            message: data.msg,
+            position: 'is-bottom-right',
+            type: 'is-success'
+          })
+        })
+        .catch((err) => {
+          this.$buefy.notification.open({
+            duration: 3000,
+            message: err.response.data.errors[0],
+            position: 'is-bottom-right',
+            type: 'is-danger'
+          })
+        })
+    },
+    findCEP (value) {
+      if (this.customer.cep.length >= 8) {
+        cep.get(`${this.customer.cep.replace(/[^\d]+/g, '')}/json`).then(({ data }) => {
+          this.customer.address = data.logradouro
+          this.customer.complement = data.complemento
+          this.customer.neighborhood = data.bairro
+          this.customer.state = data.uf
+          this.selectState()
+          this.customer.city = data.localidade
+        })
+      }
+    },
     selectState () {
       const self = this
       this.cities.forEach(filterCities)
 
       function filterCities (value, index, array) {
-        if (value.Estado === self.customer.state) {
+        if (value.Uf === self.customer.state) {
           self.selectedCities.push(value)
         }
       }
-    },
-    newCustomer () {
-      this.modalCustomer = true
     },
     async loadAsyncData () {
       this.isLoading = true

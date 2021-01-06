@@ -5,6 +5,9 @@ const request = axios.create({
 })
 
 export default {
+  addCustomer (payload) {
+    return request.post('/customers', payload)
+  },
   getCustomers (payload) {
     const params = [
       `page=${payload.page}`

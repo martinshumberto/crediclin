@@ -117,3 +117,7 @@ Vue.filter('getAge', function (value) {
   }
   return age
 })
+
+Vue.filter('clearObject', function (obj) {
+  return Object.keys(obj).reduce((acc, key) => ({ ...acc, ...(obj[key] && { [key]: obj[key] }) }), {})
+})
