@@ -47,7 +47,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.delCustomer(id)
         .then(({ data }) => {
-          commit('DEL_CUSTOMER', data)
+          commit('DEL_CUSTOMER', id)
           resolve(data)
         })
         .catch((error) => { reject(error) })
