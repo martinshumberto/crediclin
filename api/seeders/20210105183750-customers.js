@@ -40,6 +40,30 @@ module.exports = {
         neighborhood: 'Alto da Glória',
         city: 'Goiânia',
         state: 'GO'
+      },
+      {
+        firstname: 'Maria',
+        lastname: 'Silva',
+        email: 'maria@consilio.com.br',
+        cell: '62000000001'
+      },
+      {
+        firstname: 'Josefina',
+        lastname: 'Souza',
+        email: 'josefina@consilio.com.br',
+        cell: '62000000002'
+      },
+      {
+        firstname: 'Leandra',
+        lastname: 'Dorneles',
+        email: 'leandra@consilio.com.br',
+        cell: '62000000003'
+      },
+      {
+        firstname: 'Rogeria',
+        lastname: 'Silva',
+        email: 'rogeria@consilio.com.br',
+        cell: '62000000004'
       }], {})
   },
 
