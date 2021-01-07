@@ -1,35 +1,33 @@
 <template>
-  <b-card title="Line">
-    <div class="card">
-      <div class="card-content">
-        <div class="title is-size-5" style="display: flex;">
-          <p style="flex: 1;">
-            Cobranças ({{ radio === 'month' ? 'mensais' : 'anual' }})
-          </p>
-          <b-dropdown position="is-bottom-left" aria-role="list">
-            <b-button slot="trigger" slot-scope="{ active }" size="is-small" class="button is-primary" style="display: flex;">
-              <span style="font-weight: 900;">Filtro</span>
-              <b-icon :icon="active ? 'menu-up' : 'menu-down'" />
-            </b-button>
+  <div class="card">
+    <div class="card-content">
+      <div class="title is-size-5" style="display: flex;">
+        <p style="flex: 1;">
+          Cobranças ({{ radio === 'month' ? 'mensais' : 'anual' }})
+        </p>
+        <b-dropdown position="is-bottom-left" aria-role="list">
+          <b-button slot="trigger" slot-scope="{ active }" size="is-small" class="button is-primary" style="display: flex;">
+            <span style="font-weight: 900;">Filtro</span>
+            <b-icon :icon="active ? 'menu-up' : 'menu-down'" />
+          </b-button>
 
-            <b-radio
-              v-for="(item, index) in btn"
-              :key="index"
-              v-model="radio"
-              :name="item.label"
-              :value="item.value"
-              :native-value="item.value"
-              style="font-size: 14px; padding: 5px 10px;"
-              @change.native="updateChart"
-            >
-              {{ item.label }}
-            </b-radio>
-          </b-dropdown>
-        </div>
-        <ChartLineBase :height="300" :chart-data="chartData" />
+          <b-radio
+            v-for="(item, index) in btn"
+            :key="index"
+            v-model="radio"
+            :name="item.label"
+            :value="item.value"
+            :native-value="item.value"
+            style="font-size: 14px; padding: 5px 10px;"
+            @change.native="updateChart"
+          >
+            {{ item.label }}
+          </b-radio>
+        </b-dropdown>
       </div>
+      <ChartLineBase :height="300" :chart-data="chartData" />
     </div>
-  </b-card>
+  </div>
 </template>
 
 <script>
