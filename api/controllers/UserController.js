@@ -4,24 +4,26 @@ import User from '../models/User'
 class UserController {
   async store (req, res) {
     const schema = Yup.object().shape({
-      firstname: Yup.string().required(),
-      lastname: Yup.string().required(),
-      email: Yup.string().email().required(),
-      password: Yup.string().required().min(6)
+      firstname: Yup.string().required('O primeiro nome é obrigátorio.'),
+      lastname: Yup.string().required('O sobrenome é obrigátorio.'),
+      email: Yup.string().email('O e-mail é inválido.').required('O e-mail é obrigátorio.'),
+      password: Yup.string().required('A senha é obrigatória.').min(6),
+      role: Yup.number()
     })
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(401).json({ error: 'Algo deu errado na validação.' })
-    }
+    await schema.validate(req.body).catch((err) => {
+      return res.status(400).json(err)
+    })
 
     const userExists = await User.findOne({ where: { email: req.body.email } })
 
     if (userExists) {
-      return res.status(400).json({ error: 'O usuário já existe.' })
+      return res.status(400).json({ errors: ['Já existe um usuário utilizando esse e-mail.'] })
     }
 
-    const { id, name, email, role } = await User.create(req.body)
-    return res.status(201).json({ id, name, email, role })
+    const { id, firstname, lastname, email, role } = await User.create(req.body)
+    const returnUser = { id, firstname, lastname, email, role }
+    return res.status(201).json({ msg: 'Usuário cadastrado com sucesso!', return: returnUser })
   }
 
   async index (req, res) {
@@ -51,7 +53,7 @@ class UserController {
           })
       })
       .catch(() => {
-        res.status(500).send('Internal Server Error')
+        res.status(500).send({ erros: ['Estamos enfrentando instabilidades no momento, tente novamente mais tarde.'] })
       })
   }
 
@@ -66,7 +68,7 @@ class UserController {
     const schema = Yup.object().shape({
       firstname: Yup.string(),
       lastname: Yup.string(),
-      email: Yup.string().email(),
+      email: Yup.string().email('O e-mail deve ser válido.'),
       oldPassword: Yup.string().min(6),
 
       password: Yup.string().min(6)
@@ -79,9 +81,9 @@ class UserController {
         })
     })
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(401).json({ error: 'Algo deu errado na validação.' })
-    }
+    await schema.validate(req.body).catch((err) => {
+      return res.status(400).json(err)
+    })
 
     const { email, oldPassword } = req.body
 
@@ -90,12 +92,12 @@ class UserController {
       const userExists = await User.findOne({ where: { email } })
 
       if (userExists) {
-        return res.status(400).json({ error: 'O usuário já existe.' })
+        return res.status(400).json({ errors: ['O usuário já existe.'] })
       }
     }
 
     if (oldPassword && !(await user.checkPassword(oldPassword))) {
-      return res.status(401).json({ error: 'Senha não corresponde.' })
+      return res.status(401).json({ errors: ['Senha não corresponde.'] })
     }
     const { id, firstname, lastname, role } = await user.update(req.body)
 
@@ -106,7 +108,7 @@ class UserController {
     const { id } = req.params
 
     await User.destroy({ where: { id: Number(id) } })
-    return res.status(200).json(`O Usuário de id: ${id} foi deletada com sucesso`)
+    return res.status(200).json({ msg: `O usuário de id: ${id}, foi deletada com sucesso` })
   }
 }
 

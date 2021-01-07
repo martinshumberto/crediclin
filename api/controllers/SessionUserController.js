@@ -10,7 +10,7 @@ class SessionUserController {
     })
 
     await schema.validate(req.body).catch((err) => {
-      return res.status(401).json(err)
+      return res.status(400).json(err)
     })
 
     const { email, password } = req.body

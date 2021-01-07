@@ -78,6 +78,36 @@ class CustomerController {
   }
 
   async update (req, res) {
+    const schema = Yup.object().shape({
+      firstname: Yup.string().required('O primeiro nome é obrigátorio.'),
+      lastname: Yup.string().required('O sobrenome é obrigátorio.'),
+      email: Yup.string().email('O e-mail é inválido.').required('O e-mail é obrigátorio.'),
+      phone: Yup.string(),
+      cell: Yup.string().required('O celular é obrigátorio.').min(9),
+      cpf: Yup.string().min(11),
+      rg: Yup.string(),
+      rg_issue_date: Yup.date(),
+      rg_organ_emitter: Yup.string(),
+      birth: Yup.date(),
+      cep: Yup.string().min(8),
+      address: Yup.string(),
+      complement: Yup.string(),
+      number: Yup.string(),
+      neighborhood: Yup.string(),
+      city: Yup.string(),
+      state: Yup.string()
+
+    })
+
+    await schema.validate(req.body).catch((err) => {
+      return res.status(400).json(err)
+    })
+
+    const customer = await Customer.findByPk(req.body.id)
+
+    const returnCustomer = await customer.update(req.body)
+
+    return res.status(200).json({ msg: 'Cliente atualizado com sucesso!', return: returnCustomer })
   }
 
   async delete (req, res) {
