@@ -11,13 +11,15 @@ routes.get('/auth/users/logged', auth, SessionUserController.show)
 
 routes.get('/users', auth, UserController.index)
 routes.post('/users', auth, UserController.store)
-routes.put('/users/:id', auth, UserController.update)
-routes.delete('/users/:id', auth, UserController.delete)
+routes.get('/user/:id', auth, UserController.show)
+routes.put('/user/:id', auth, UserController.update)
+routes.delete('/user/:id', auth, UserController.delete)
 
 routes.get('/customers', auth, CustomerController.index)
 routes.post('/customers', auth, CustomerController.store)
-routes.put('/customers/:id', auth, CustomerController.update)
-routes.delete('/customers/:id', auth, CustomerController.delete)
+routes.get('/customer/:id', auth, CustomerController.show)
+routes.put('/customer/:id', auth, CustomerController.update)
+routes.delete('/customer/:id', auth, CustomerController.delete)
 
 routes.get('/test', function (req, res) {
   res.send('Test successful')
