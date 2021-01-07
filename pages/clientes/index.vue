@@ -10,7 +10,7 @@
             size="is-small"
             type="is-primary"
             icon-left="plus"
-            @click="modalNewCustomer = true"
+            @click="modalCustomer = true"
           >
             Adicionar
           </b-button>
@@ -59,7 +59,7 @@
           </b-table-column>
 
           <b-table-column v-slot="props" field="locale" label="Cidade / UF">
-            {{ props.row.city ? (props.row.city + '/' + props.row.state) : '-' }}
+            {{ props.row.city ? (props.row.city + ' / ' + props.row.state) : '-' }}
           </b-table-column>
 
           <b-table-column v-slot="props" field="date" label="Data da criação" centered>
@@ -74,6 +74,7 @@
                 size="is-small"
                 type="is-primary"
                 icon-right="lead-pencil"
+                @click="openEditCustomer(props.row.id)"
               />
             </b-tooltip>
             <b-tooltip type="is-success" label="Negociações">
@@ -95,48 +96,56 @@
         </b-table>
       </div>
     </div>
-    <b-modal v-model="modalNewCustomer" :width="640" scroll="keep">
+    <b-modal v-if="modalCustomer" v-model="modalCustomer" :on-cancel=" () => { customer = copyCustomer; editActive = false }" :width="800" scroll="keep">
       <div class="card">
         <div class="card-content">
           <div class="media">
             <div class="media-content">
               <p class="title is-4">
-                Adicionar cliente
+                {{ editActive ? `Editar cliente: ${customer.firstname} ${customer.lastname}` : 'Adicionar cliente' }}
               </p>
               <p class="subtitle is-6">
-                Preencha as informações abaixo para cadastrar um novo cliente.
+                {{
+                  editActive
+                    ?
+                      'Abaixo você encontrará os dados pessoais referentes ao cliente selecionado.' :
+                      'Preencha as informações abaixo para cadastrar um novo cliente.'
+                }}
               </p>
             </div>
           </div>
 
-          <div class="content content-newcustomer">
-            <form ref="newcustomer" @submit.prevent="addCustomer()">
+          <div class="content content-modal-customer">
+            <form ref="formcostumer" @submit.prevent="editActive ? editCustomer() : addCustomer()">
               <div class="columns">
                 <div class="column is-6">
-                  <b-field label="Primeiro nome">
-                    <b-input v-model="customer.firstname" />
+                  <b-field label="Primeiro nome *">
+                    <b-input v-model="customer.firstname" required />
                   </b-field>
                 </div>
                 <div class="column is-6">
-                  <b-field label="Sobrenome">
-                    <b-input v-model="customer.lastname" />
+                  <b-field label="Sobrenome *">
+                    <b-input v-model="customer.lastname" required />
                   </b-field>
                 </div>
               </div>
               <div class="columns">
                 <div class="column is-8">
-                  <b-field label="E-mail">
-                    <b-input v-model="customer.email" />
+                  <b-field label="E-mail *">
+                    <b-input v-model="customer.email" required />
                   </b-field>
                 </div>
                 <div class="column is-4">
                   <b-field label="Aniversário">
                     <b-datepicker
                       v-model="customer.birth"
+                      editable
                       :show-week-number="false"
                       locale="pt-BR"
                       icon="calendar-today"
                       trap-focus
+                      :date-parser="dateParser"
+                      :date-creator="dateCreator"
                     />
                   </b-field>
                 </div>
@@ -148,8 +157,8 @@
                   </b-field>
                 </div>
                 <div class="column is-6">
-                  <b-field label="Celular">
-                    <b-input v-model="customer.cell" />
+                  <b-field label="Celular *">
+                    <b-input v-model="customer.cell" required />
                   </b-field>
                 </div>
               </div>
@@ -174,6 +183,8 @@
                       locale="pt-BR"
                       icon="calendar-today"
                       trap-focus
+                      :date-parser="dateParser"
+                      :date-creator="dateCreator"
                     />
                   </b-field>
                 </div>
@@ -186,7 +197,7 @@
               <div class="columns">
                 <div class="column is-6">
                   <b-field label="CEP">
-                    <b-input v-model="customer.cep" maxlength="9" @input="findCEP()" />
+                    <b-input v-model="customer.cep" @input="findCEP()" />
                   </b-field>
                 </div>
                 <div class="column is-6">
@@ -250,7 +261,7 @@
                     type="is-primary"
                     tag="input"
                     native-type="submit"
-                    value="Cadastrar"
+                    :value="editActive ? 'Salvar' : 'Cadastrar'"
                   />
                 </div>
               </div>
@@ -283,7 +294,7 @@ export default {
       isFocusable: false,
       isLoading: false,
       hasMobileCards: true,
-      modalNewCustomer: false,
+      modalCustomer: false,
       customer: {
         firstname: undefined,
         lastname: undefined,
@@ -305,18 +316,64 @@ export default {
       },
       selectedCities: [],
       cities,
-      states
+      states,
+      copyCustomer: undefined,
+      editActive: false,
+      dateParser: date => new Date(Date.parse(date)),
+      dateCreator: () => new Date()
     }
   },
-  mounted () {
-    this.loadAsyncData()
+  async mounted () {
+    await this.loadAsyncData()
+    this.copyCustomer = { ...this.customer }
   },
   methods: {
+    openEditCustomer (id) {
+      this.$store
+        .dispatch('customers/show', id)
+        .then((data) => {
+          this.customer = { ...data }
+          if (this.customer.birth) {
+            this.customer.birth = new Date(this.customer.birth)
+          }
+          if (this.customer.rg_issue_date) {
+            this.customer.rg_issue_date = new Date(this.customer.rg_issue_date)
+          }
+          this.editActive = true
+          this.modalCustomer = true
+        })
+    },
+    editCustomer () {
+      const customer = this.$options.filters.clearObject(this.customer)
+      this.$store
+        .dispatch('customers/update', customer)
+        .then((data) => {
+          this.modalCustomer = false
+          this.customer = this.copyCustomer
+          this.loadAsyncData()
+          const Toast = this.$swal.mixin({
+            toast: true,
+            position: 'bottom-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', this.$swal.stopTimer)
+              toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+            }
+          })
+          Toast.fire({
+            icon: 'success',
+            title: data.msg
+          })
+        })
+    },
     addCustomer () {
       this.$store
-        .dispatch('customers/addCustomer', this.customer)
-        .then(({ data }) => {
-          this.modalNewCustomer = false
+        .dispatch('customers/store', this.customer)
+        .then((data) => {
+          this.modalCustomer = false
+          this.customer = this.copyCustomer
           const Toast = this.$swal.mixin({
             toast: true,
             position: 'bottom-end',
@@ -336,7 +393,7 @@ export default {
     },
     delCustomer (id) {
       this.$store
-        .dispatch('customers/delCustomer', id)
+        .dispatch('customers/delete', id)
         .then((data) => {
           const Toast = this.$swal.mixin({
             toast: true,
@@ -350,7 +407,7 @@ export default {
             }
           })
           Toast.fire({
-            icon: 'error',
+            icon: 'success',
             title: data.msg
           })
         })
@@ -381,7 +438,7 @@ export default {
       this.isLoading = true
 
       await this.$store
-        .dispatch('customers/getCustomers', { page: this.page })
+        .dispatch('customers/index', { page: this.page })
         .then((data) => {
           this.data = data.data
           this.perPage = data.per_page
@@ -405,7 +462,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.content-newcustomer {
+.content-modal-customer {
   & .column {
     padding: 5px 0.75rem !important;
     & label {

@@ -3,6 +3,7 @@ import api from '../services/customers'
 const namespaced = true
 
 const state = () => ({
+  customer: undefined,
   customers: []
 })
 
@@ -16,6 +17,9 @@ const mutations = {
   SET_CUSTOMERS (state, payload) {
     state.customers = payload
   },
+  SET_CUSTOMER (state, payload) {
+    state.customer = payload
+  },
   DEL_CUSTOMER (state, id) {
     const customerIndex = state.customers.data.findIndex(u => u.id === id)
     state.customers.data.splice(customerIndex, 1)
@@ -23,9 +27,9 @@ const mutations = {
 }
 
 const actions = {
-  addCustomer ({ commit }, payload) {
+  store ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api(this.$axios).addCustomer(payload)
+      api(this.$axios).store(payload)
         .then(({ data }) => {
           commit('ADD_CUSTOMER', data.return)
           resolve(data)
@@ -33,9 +37,9 @@ const actions = {
         .catch((error) => { reject(error) })
     })
   },
-  getCustomers ({ commit }, payload) {
+  index ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api(this.$axios).getCustomers(payload)
+      api(this.$axios).index(payload)
         .then(({ data }) => {
           commit('SET_CUSTOMERS', data)
           resolve(data)
@@ -43,9 +47,28 @@ const actions = {
         .catch((error) => { reject(error) })
     })
   },
-  delCustomer ({ commit }, id) {
+  show ({ commit }, id) {
     return new Promise((resolve, reject) => {
-      api(this.$axios).delCustomer(id)
+      api(this.$axios).show(id)
+        .then(({ data }) => {
+          commit('SET_CUSTOMER', data)
+          resolve(data)
+        })
+        .catch((error) => { reject(error) })
+    })
+  },
+  update ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api(this.$axios).update(payload)
+        .then(({ data }) => {
+          resolve(data)
+        })
+        .catch((error) => { reject(error) })
+    })
+  },
+  delete ({ commit }, id) {
+    return new Promise((resolve, reject) => {
+      api(this.$axios).delete(id)
         .then(({ data }) => {
           commit('DEL_CUSTOMER', id)
           resolve(data)
