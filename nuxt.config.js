@@ -43,7 +43,7 @@ export default {
   ],
 
   moment: {
-    defaultLocale: ['pt-BR']
+    defaultLocale: ['pt-br']
   },
 
   // Modules (https://go.nuxtjs.dev/config-modules)
