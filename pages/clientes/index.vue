@@ -333,6 +333,7 @@ export default {
         .dispatch('customers/show', id)
         .then((data) => {
           this.customer = { ...data }
+          this.selectState()
           if (this.customer.birth) {
             this.customer.birth = new Date(this.customer.birth)
           }
